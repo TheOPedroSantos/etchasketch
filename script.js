@@ -5,11 +5,19 @@ const container = document.getElementById('container');
 // Function to create a new grid with 16*16
 function createGrid(size) {
     container.innerHTML = '';
-    const containerSize = size * size;
+    
+    // const squareSize = 820 / size;
+    // container.style.width = `${820}px`;
+    // container.style.height = `${820}px`;
+    // const containerSize = size * size;
 
-    for (let i = 0; i < containerSize; i++) {
+    container.style.setProperty('--grid-size', size)
+
+    for (let i = 0; i < size * size; i++) {
         const containerItem = document.createElement('div');
         containerItem.classList.add('container-item');
+        // containerItem.style.width = `${squareSize}px`;
+        // containerItem.style.height = `${squareSize}px`;
         container.appendChild(containerItem);
     }
 

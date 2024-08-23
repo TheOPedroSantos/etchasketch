@@ -16,24 +16,42 @@ function createGrid(size) {
 
     const containerItem = document.getElementsByClassName('container-item');
 
-        // Get a random value for the 'limit'
-        const getRandomNumber = (limit) => {
-            return Math.floor(Math.random() * limit);
-        };
+    // Get a random value for the 'limit'
+    const getRandomNumber = (maxNum) => {
+        return Math.floor(Math.random() * maxNum);
+    };
 
-        // Get a random background color for the containerItems(squares)
-        const getRandomColor = () => {
-            const h = getRandomNumber(360);
-            const s = getRandomNumber(100);
-            const l = getRandomNumber(100);
-            return `hsl(${h}deg, ${s}%, ${l}%)`;
-        }
+    // Get a random background color for the containerItems(squares)
+    const getRandomColor = () => {
+        const h = getRandomNumber(360);
+        const s = getRandomNumber(100);
+        const l = getRandomNumber(100);
+        return `hsl(${h}deg, ${s}%, ${l}%)`;
+    }
 
     // When mouseover, the background color of the containerItems is changed
     for (let item of containerItem) {
-        item.addEventListener('mouseover', function() { 
-            const randomColor = getRandomColor();
-            item.style.backgroundColor = randomColor;
+        item.addEventListener('mouseover', () => { 
+
+        item.style.backgroundColor = getRandomColor();
+            
+            // Get item darker every interaction
+            let darkness = parseInt(item.dataset.darkness, 10);
+            if (darkness < 10) {
+                darkness ++;
+                item.dataset.darkness = darkness;
+
+                // Get the current color of item
+                let currentColor = item.style.backgroundColor;
+
+                // Get the hsl number values 
+                let [h, s, l] = currentColor.match(/\d+/g).map(Number);
+
+                // Reduce the "L" (luminosity) values in 10%
+                l = Math.max(0, l - 10);
+
+                item.style.backgroundColor = `hsl(${h}deg, ${s}%, ${l}%)`;
+            }
         });
     }
 }

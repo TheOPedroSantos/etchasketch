@@ -1,69 +1,54 @@
 // Etch a Sketch JS file
 
-const container = document.getElementById('container');
+const grid = document.querySelector('.grid');
 
-// Function to create a new grid with 16*16
-function createGrid(size) {
-    container.innerHTML = '';
+addEventListener('DOMContentLoaded', () => {
+    const btn = document.querySelector('#btn');
+    btn.addEventListener('click', () => {
+        const userInput = prompt('Choose the number of squares per side of the new grid', 16);
+        if (userInput !== null) {
+            removeAllChildElements(grid);
+            createGrid(+userInput);
+        };
+    });
+});
 
-    container.style.setProperty('--grid-size', size)
 
-    for (let i = 0; i < size * size; i++) {
-        const containerItem = document.createElement('div');
-        containerItem.classList.add('container-item');
-        container.appendChild(containerItem);
-    }
-
-    const containerItem = document.getElementsByClassName('container-item');
-
-    // Get a random value for the 'limit'
-    const getRandomNumber = (maxNum) => {
-        return Math.floor(Math.random() * maxNum);
-    };
-
-    // Get a random background color for the containerItems(squares)
-    const getRandomColor = () => {
-        const h = getRandomNumber(360);
-        const s = getRandomNumber(100);
-        const l = getRandomNumber(100);
-        return `hsl(${h}deg, ${s}%, ${l}%)`;
-    }
-
-    // When mouseover, the background color of the containerItems is changed
-    for (let item of containerItem) {
-        item.addEventListener('mouseover', () => { 
-
-        item.style.backgroundColor = getRandomColor();
-            
-            // Get item darker every interaction
-            let darkness = parseInt(item.dataset.darkness, 10);
-            if (darkness < 10) {
-                darkness ++;
-                item.dataset.darkness = darkness;
-
-                // Get the current color of item
-                let currentColor = item.style.backgroundColor;
-
-                // Get the hsl number values 
-                let [h, s, l] = currentColor.match(/\d+/g).map(Number);
-
-                // Reduce the "L" (luminosity) values in 10%
-                l = Math.max(0, l - 10);
-
-                item.style.backgroundColor = `hsl(${h}deg, ${s}%, ${l}%)`;
-            }
-        });
+function removeAllChildElements(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
     }
 }
-createGrid(16);
 
-// Function to create a grid base on user input
-const btn = document.getElementById('button');
-btn.addEventListener('click', () => {
-    userInput = prompt('Pick how many squares per side you want to generate? Max: 100');
-    if (userInput < 1 || userInput > 100 || isNaN(userInput) || !Number.isInteger(Number(userInput))) {
-        alert('Pick a valid number');
-    } else {
-        createGrid(userInput);
+function createGrid(size = 16) {
+    // If size is bigger than 100, then its 100. else, gets the determined size
+    size = (size > 100) ? 100 : size;
+
+    const itemBrightness = new Array(size * size).fill(1);
+
+    for (let i = 1; i <= size * size; i++) {
+        const containerItem = document.createElement('div');
+        containerItem.classList.add('container-item');
+        containerItem.style.width = `${100 / size}%`;
+
+        containerItem.addEventListener('mouseenter', () => {
+            // Change of color on the first interaction
+            if (itemBrightness[i] === 1) {
+                const red = getRandom(0, 256);
+                const green = getRandom(0, 256);
+                const blue = getRandom(0, 256);
+                containerItem.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
+            }
+            // Decrease the brightness by 10% after every interaction
+            itemBrightness[i] =- 0.1;
+            containerItem.style.filter = `brightness(${itemBrightness[i]})`;
+        });
+        grid.appendChild(containerItem);
     }
-});
+};
+
+function getRandom(from = 0, to = 1) {
+    return from + Math.floor((Math.random() * to));
+}
+
+createGrid();

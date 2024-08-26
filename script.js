@@ -40,11 +40,12 @@ function createGrid(size = 16) {
                 containerItem.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
             }
             // Decrease the brightness by 10% after every interaction
-            itemBrightness[i] =- 0.1;
+            itemBrightness[i] -= 0.1;
             containerItem.style.filter = `brightness(${itemBrightness[i]})`;
         });
+
         grid.appendChild(containerItem);
-    }
+    };
 };
 
 function getRandom(from = 0, to = 1) {
